@@ -22,7 +22,7 @@ function ForeverAgent(options) {
     } else if (self.sockets[name].length < self.minSockets) {
       if (!self.freeSockets[name]) self.freeSockets[name] = []
       self.freeSockets[name].push(socket)
-      
+
       // if an error happens while we don't use the socket anyway, meh, throw the socket away
       function onIdleError() {
         socket.destroy()
@@ -70,7 +70,7 @@ ForeverAgent.prototype.removeSocket = function(s, name, host, port) {
     delete this.sockets[name]
     delete this.requests[name]
   }
-  
+
   if (this.freeSockets[name]) {
     var index = this.freeSockets[name].indexOf(s)
     if (index !== -1) {
@@ -93,11 +93,6 @@ function ForeverAgentSSL (options) {
 }
 util.inherits(ForeverAgentSSL, ForeverAgent)
 
-ForeverAgentSSL.prototype.createConnection = createConnectionSSL
+ForeverAgentSSL.prototype.createConnection = tls.connect;
 ForeverAgentSSL.prototype.addRequestNoreuse = AgentSSL.prototype.addRequest
 
-function createConnectionSSL (port, host, options) {
-  options.port = port
-  options.host = host
-  return tls.connect(options)
-}
